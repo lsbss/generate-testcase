@@ -11,15 +11,14 @@ import org.json.JSONObject;
 
 import br.com.cesarschool.utils.GetParameters;
 
-public class GenerateTestCase {
-    public static ArrayList<String> chatGPT(String prompt) {
+public class GenerateTitle {
+    public static String getTitle(String testCase) {
 
         GetParameters property = new GetParameters();
 
         String url = property.getParameter("chatgpt.url");
         String apiKey = property.getParameter("chatgpt.key");
         String model = property.getParameter("chatgpt.model");
-        ArrayList<String> testsList = new ArrayList<String>();
 
         try {
             URL obj = new URL(url);
@@ -37,7 +36,7 @@ public class GenerateTestCase {
 
             JSONObject message = new JSONObject();
             message.put("role", "user");
-            message.put("content", prompt);
+            message.put("content", "Defina e retorne somente um título para o caso de teste a seguir: " + testCase);
 
             requestBody.put("messages", new JSONArray().put(message));
 
@@ -48,14 +47,9 @@ public class GenerateTestCase {
             writer.close();
 
             // Response from ChatGPT
-            byte conteudo[] = connection.getInputStream().readAllBytes();
-
-            // calls the method to extract the message.
-
-            testsList.addAll(Arrays.asList(extractMessageFromJSONResponse(new String(conteudo, "UTF-8"))
-                    .split("(Fluxo principal|Fluxo alternativo|Fluxo de exceção)")));
-
-            return testsList;
+            byte[] conteudo = connection.getInputStream().readAllBytes();
+            String response = extractMessageFromJSONResponse(new String(conteudo, "UTF-8"));
+            return response;
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -69,5 +63,5 @@ public class GenerateTestCase {
 
         return response.substring(start, end);
     }
-
+    
 }

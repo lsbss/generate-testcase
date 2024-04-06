@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Base64;
+
+import javax.swing.JOptionPane;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
@@ -51,17 +54,30 @@ public class GetWorkItem {
 
             // Convert JSON string to JSON object
             JSONObject jsonObject = new JSONObject(json);
-            String acceptanceCriteria = jsonObject.getJSONObject("fields").getString("Microsoft.VSTS.Common.AcceptanceCriteria");
+            String workItemType = jsonObject.getJSONObject("fields").getString("System.WorkItemType");
 
-            acceptanceCriteria = acceptanceCriteria.replaceAll("<div>", "-");
-            acceptanceCriteria = acceptanceCriteria.replaceAll("</div>", ";");
-            acceptanceCriteria = acceptanceCriteria.replaceAll("<(.*?)>", "");
-            
-            // Close the HTTP client
-            httpClient.close();
+            if (workItemType.equals("User Story")) {
+                String acceptanceCriteria = jsonObject.getJSONObject("fields")
+                        .getString("Microsoft.VSTS.Common.AcceptanceCriteria");
 
-            return "Crie casos de teste, levantando fluxo principal, fluxos alternativos e de exceção  para os critérios de aceite a seguir: " + acceptanceCriteria;
+                if (acceptanceCriteria.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Critérios de aceite não encontrados.");
+                    return null;
+                }
 
+                acceptanceCriteria = acceptanceCriteria.replaceAll("<div>", "-");
+                acceptanceCriteria = acceptanceCriteria.replaceAll("</div>", ";");
+                acceptanceCriteria = acceptanceCriteria.replaceAll("<(.*?)>", "");
+
+                // Close the HTTP client
+                httpClient.close();
+
+                return "Crie casos de teste, levantando o fluxo principal, fluxos alternativos e de exceção para os critérios de aceite a seguir: "
+                        + acceptanceCriteria;
+            } else {
+                JOptionPane.showMessageDialog(null, "WorkItem deve ser uma User Story com critérios de aceite!");
+                return "Error!";
+            }
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
         }

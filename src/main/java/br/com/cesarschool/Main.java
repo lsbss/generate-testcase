@@ -11,7 +11,7 @@ public class Main {
 
         GetWorkItem getWorkItem = new GetWorkItem();
         String wkID = JOptionPane.showInputDialog("Digite o ID do WorkItem:");
-        
+
         String criterios = getWorkItem.getAcceptanceCriteria(wkID);
 
         try {
@@ -19,6 +19,6 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
     }
 }
