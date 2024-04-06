@@ -14,6 +14,9 @@ public class Main {
 
         String criterios = getWorkItem.getAcceptanceCriteria(wkID);
 
+        if(criterios.equals("Error!")){
+            return;
+        }
         try {
             CreateTestCase.createTestCase(GenerateTestCase.chatGPT(criterios), wkID);
         } catch (Exception e) {

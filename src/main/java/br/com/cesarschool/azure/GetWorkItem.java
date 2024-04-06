@@ -21,6 +21,8 @@ import br.com.cesarschool.utils.GetParameters;
 public class GetWorkItem {
     public String getAcceptanceCriteria(String workItemId) {
         try {
+
+            String workItemType = null;
             GetParameters property = new GetParameters();
 
             // Set up Azure DevOps API URL
@@ -54,7 +56,12 @@ public class GetWorkItem {
 
             // Convert JSON string to JSON object
             JSONObject jsonObject = new JSONObject(json);
-            String workItemType = jsonObject.getJSONObject("fields").getString("System.WorkItemType");
+            try {
+                workItemType = jsonObject.getJSONObject("fields").getString("System.WorkItemType");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "WorkItem não encontrado!");
+                return "Error!";
+            }
 
             if (workItemType.equals("User Story")) {
                 String acceptanceCriteria = jsonObject.getJSONObject("fields")
@@ -62,7 +69,7 @@ public class GetWorkItem {
 
                 if (acceptanceCriteria.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Critérios de aceite não encontrados.");
-                    return null;
+                    return "Error!";
                 }
 
                 acceptanceCriteria = acceptanceCriteria.replaceAll("<div>", "-");

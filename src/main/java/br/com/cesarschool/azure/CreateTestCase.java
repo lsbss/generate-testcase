@@ -1,7 +1,6 @@
 package br.com.cesarschool.azure;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -102,12 +101,15 @@ public class CreateTestCase {
                     httpClient.close();
 
                 } catch (URISyntaxException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
         }
-        JOptionPane.showMessageDialog(null, "Testes criados com sucesso: " + testOK);
-        JOptionPane.showMessageDialog(null, "Testes não criados: " + testNOK);
+        if(testOK.size() > 0){
+            JOptionPane.showMessageDialog(null, "Testes criados com sucesso: " + testOK);
+        }
+        if(testNOK.size() > 0){            
+            JOptionPane.showMessageDialog(null, "Testes não criados: " + testNOK);
+        }
     }
 }
